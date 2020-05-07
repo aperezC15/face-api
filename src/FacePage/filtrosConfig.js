@@ -4,12 +4,12 @@ const filtros = [
 		path: './Imagenes/Cocina/Cocina1.svg',
 		positionFace: 'getLeftEye',
 		dim: {
-			width: '100',
-			height: '100'
+			width: 100,
+			height: 100
 		},
 		move: {
-			toRight: '0',
-			toBottom: '0'
+			toRight: 0,
+			toBottom: 0
 		}
 	},
 	{
@@ -17,12 +17,12 @@ const filtros = [
 		path: './Imagenes/Cocina/Cocina2.svg',
 		positionFace: 'getLeftEye',
 		dim: {
-			width: '100',
-			height: '100'
+			width: 100,
+			height: 100
 		},
 		move: {
-			toRight: '0',
-			toBottom: '0'
+			toRight: 0,
+			toBottom: -30
 		}
 	},
 	{
