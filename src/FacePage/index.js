@@ -207,11 +207,6 @@ class FacePage extends Component {
 				await faceapi.nets.tinyFaceDetector.load(modelFolder);
 			}
 
-			this.state.imageFilter.src = '/Imagenes/Cocina/Cocina2.svg';
-
-			this.state.imageFilter.onload = function() {
-				console.log('image is loaded');
-			};
 			// this.state.imagenMari.onload = function() {
 			// 	console.log('imagen de mariposa is loaded');
 			// };
@@ -255,18 +250,7 @@ class FacePage extends Component {
 				/>
 				<Camera />
 				<Canva />
-				<input
-					type="number"
-					style={{
-						marginLeft: 1000
-					}}
-					value={this.state.positionIndex}
-					onChange={(event) => {
-						this.setState({
-							positionIndex: event.target.value
-						});
-					}}
-				/>
+
 				{''}
 			</div>
 		);
