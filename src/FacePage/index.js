@@ -185,7 +185,7 @@ class FacePage extends Component {
 				await faceapi.nets.tinyFaceDetector.load(modelFolder);
 			}
 
-			this.state.imagenMari.src = '/Imagenes/Cocina/plato.svg';
+			this.state.imagenMari.src = '/Imagenes/Cocina/Cocina4.svg';
 			this.state.imageFilter.src = '/Imagenes/lentesMoña.svg';
 			this.state.imageFilter.onload = function() {
 				console.log('image is loaded');
@@ -234,11 +234,6 @@ class FacePage extends Component {
 				/>
 				{''}
 				<Menu />
-				<Button variant="contained" color="primary">Filtro1</Button>
-				<Button variant="contained" color="primary">Filtro2</Button>
-				<Button variant="contained" color="primary">Filtro3</Button>
-				<Button variant="contained" color="primary">Filtro4</Button>
-				<Button variant="contained" color="primary">Filtro5</Button>
 			</div>
 		);
 	}
