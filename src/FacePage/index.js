@@ -26,6 +26,7 @@ class FacePage extends Component {
 		this.setVideoHandler = this.setVideoHandler.bind(this);
 		this.isModelLoaded = this.isModelLoaded.bind(this);
 		this.onSelectFilter = this.onSelectFilter.bind(this);
+		this.addFilter = this.addFilter.bind(this);
 	}
 
 	translateExpression(expression) {
@@ -97,6 +98,41 @@ class FacePage extends Component {
 		return new this.cargarImagenes();
 	}
 
+	getRotation(position) {
+		const m = (position.Y2 - position.Y1) / (position.X2 - position.X1) * 100;
+
+		// m = (positionY2 - positionY1) / (positionX2 - positionX1) * 100;
+		const TO_RADIANS = Math.PI / 180;
+
+		return m / 2.5 * TO_RADIANS;
+	}
+
+	addFilter(canvas, landmarks) {
+		let startIndex = 0, // eyeLeft
+			endIndex = 16, // eyeRight
+			ajustX = 0,
+			ajustY = 20;
+
+		const filtro = filtros.find((f) => f.name === this.state.filterSelected);
+		const angleInRad = this.getRotation({
+			X1: landmarks.positions[startIndex].x - ajustX,
+			Y1: landmarks.positions[startIndex].y + ajustY,
+			X2: landmarks.positions[endIndex].x + ajustX,
+			Y2: landmarks.positions[endIndex].y + ajustY
+		});
+
+		const initialPosition = {
+			x: landmarks[filtro.positionFace]()[0].x + filtro.move.toRight,
+			y: landmarks[filtro.positionFace]()[0].y + filtro.move.toBottom
+		};
+
+		canvas.translate(initialPosition.x, initialPosition.y);
+
+		canvas.rotate(angleInRad);
+
+		canvas.drawImage(this.state.imageFilter, 0, 0, filtro.dim.width, filtro.dim.height);
+	}
+
 	async setVideoHandler() {
 		if (this.isModelLoaded() !== undefined) {
 			try {
@@ -127,26 +163,11 @@ class FacePage extends Component {
 							result.detection.box.bottomLeft
 						).draw(this.props.canvas.current);
 
-						const filtro = filtros.find((f) => f.name === this.state.filterSelected);
-						// const jawOutline = landmarks.getJawOutline();
-						// const nose = landmarks.getNose();
-						// const mouth = landmarks.getMouth();
-						// const leftEye = landmarks.getLeftEye();
-						// const rightEye = landmarks.getRightEye();
-						// const leftEyeBbrow = landmarks.getLeftEyeBrow();
-						// const rightEyeBrow = landmarks.getRightEyeBrow();
-
 						//ADD CANVAS
 						const currentCanvas = ReactDOM.findDOMNode(this.props.canvas.current);
 						var canvasElement = currentCanvas.getContext('2d');
 
-						const initialPosition = {
-							x: landmarks[filtro.positionFace]()[0].x + filtro.move.toRight,
-							y: landmarks[filtro.positionFace]()[0].y + filtro.move.toBottom
-						};
-
-						canvasElement.translate(initialPosition.x, initialPosition.y);
-						canvasElement.drawImage(this.state.imageFilter, 0, 0, filtro.dim.width, filtro.dim.height);
+						this.addFilter(canvasElement, landmarks);
 					});
 				}
 			} catch (exception) {
