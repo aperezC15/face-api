@@ -6,6 +6,8 @@ esta libreria puede ser implementada en una aplicación web o móvil.
 
 [![Filtro](/readme_image/Filtro1.PNG)](img/readme_image/Filtro1.PNG)
 
+[![Filtro](/readme_image/Filtro2.PNG)](img/readme_image/Filtro2.PNG)
+
 # Tecnologías usadas
 - 1.React js (https://reactjs.org/)
 - 2.Face-api.js (https://github.com/- justadudewhohacks/face-api.js/)

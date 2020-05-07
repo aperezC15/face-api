@@ -186,7 +186,7 @@ class FacePage extends Component {
 				await faceapi.nets.tinyFaceDetector.load(modelFolder);
 			}
 
-			this.state.imageFilter.src = '/Imagenes/Cocina/Cocina4.svg';
+			this.state.imageFilter.src = '/Imagenes/Cocina/Cocina2.svg';
 
 			this.state.imageFilter.onload = function() {
 				console.log('image is loaded');
