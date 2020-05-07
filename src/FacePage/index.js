@@ -6,8 +6,9 @@ import mapDispatchToProps from './mapDispatchToProps';
 import Camera from './Camera';
 import Canva from './Canva';
 import * as faceapi from 'face-api.js';
-import Menu from './Componente_Menu';
-import Button from '@material-ui/core/Button';
+
+import MenuFiltros from '../components/MenuFiltros';
+import filtros from './filtrosConfig';
 
 class FacePage extends Component {
 	constructor(props) {
@@ -19,10 +20,12 @@ class FacePage extends Component {
 			checkAutorization: true,
 			positionIndex: 0,
 			imageFilter: new Image(),
-			imagenMari: new Image()
+			imagenMari: new Image(),
+			filterSelected: 'Cocina1'
 		};
 		this.setVideoHandler = this.setVideoHandler.bind(this);
 		this.isModelLoaded = this.isModelLoaded.bind(this);
+		this.onSelectFilter = this.onSelectFilter.bind(this);
 	}
 
 	translateExpression(expression) {
@@ -70,29 +73,29 @@ class FacePage extends Component {
 		canvas.stroke();
 		canvas.closePath();
 	}
-	
+
 	//Obtener las imagenes
 	getFaceImageUri(className, idx) {
-	return `${className}/${className}${idx}.svg`;
-	};
+		return `${className}/${className}${idx}.svg`;
+	}
 
 	async cargarImagenes(imagencargada = 1) {
-		const classes = ["Cocina"];
-	
+		const classes = [ 'Cocina' ];
+
 		const cargaImagen = await Promise.all(
-		  classes.map(async (className) => {
-			for (let i = 1; i < imagencargada + 1; i++) {
-			  let img = new Image();
-			  img.src = "/Imagenes/Cocina" + this.getFaceImageUri(className, i);
-			  //console.log(img);
-			}
-	
-			return new cargaImagen;
-		  })
+			classes.map(async (className) => {
+				for (let i = 1; i < imagencargada + 1; i++) {
+					let img = new Image();
+					img.src = '/Imagenes/Cocina' + this.getFaceImageUri(className, i);
+					//console.log(img);
+				}
+
+				return new cargaImagen();
+			})
 		);
-	
-		return new this.cargarImagenes;
-	  }
+
+		return new this.cargarImagenes();
+	}
 
 	async setVideoHandler() {
 		if (this.isModelLoaded() !== undefined) {
@@ -140,12 +143,12 @@ class FacePage extends Component {
 						let ancho = rightEye[3].x - leftEye[0].x + 35,
 							alto = leftEye[5].y - leftEye[2].y + 95;
 
-						// canvasElement.translate(leftEye[0].x - 12, leftEye[0].y - 50);
-						//canvasElement.drawImage(this.state.imageFilter, 0, 0, ancho, alto);
+						canvasElement.translate(leftEye[0].x - 12, leftEye[0].y - 50);
+						canvasElement.drawImage(this.state.imageFilter, 0, 0, ancho, alto);
 
 						//mariposa
-						canvasElement.translate(leftEye[0].x - 20, leftEye[0].y + 10);
-						canvasElement.drawImage(this.state.imagenMari, 0, 0, 25, 25);
+						// canvasElement.translate(leftEye[0].x - 20, leftEye[0].y + 10);
+						// canvasElement.drawImage(this.state.imagenMari, 0, 0, 25, 25);
 					});
 				}
 			} catch (exception) {
@@ -185,14 +188,14 @@ class FacePage extends Component {
 				await faceapi.nets.tinyFaceDetector.load(modelFolder);
 			}
 
-			this.state.imagenMari.src = '/Imagenes/Cocina/plato.svg';
-			this.state.imageFilter.src = '/Imagenes/lentesMoña.svg';
+			// this.state.imagenMari.src = '/Imagenes/Cocina/plato.svg';
+			this.state.imageFilter.src = '/Imagenes/Cocina/Cocina1.svg';
 			this.state.imageFilter.onload = function() {
 				console.log('image is loaded');
 			};
-			this.state.imagenMari.onload = function() {
-				console.log('imagen de mariposa is loaded');
-			};
+			// this.state.imagenMari.onload = function() {
+			// 	console.log('imagen de mariposa is loaded');
+			// };
 		} catch (exception) {
 			console.error('ComponentDidMount exception', exception);
 		}
@@ -215,9 +218,20 @@ class FacePage extends Component {
 		this.props.SET_DETECTOR_OPTIONS_IN_GAME_FACENET(options);
 	}
 
+	onSelectFilter(name) {
+		const filtro = filtros.find((f) => f.name == name);
+		this.state.imageFilter.src = filtro.path;
+		this.setState({ filterSelected: name });
+	}
+
 	render() {
 		return (
 			<div>
+				<MenuFiltros
+					filters={filtros}
+					handleSelectFilter={this.onSelectFilter}
+					selected={this.state.filterSelected}
+				/>
 				<Camera />
 				<Canva />
 				<input
@@ -232,13 +246,6 @@ class FacePage extends Component {
 						});
 					}}
 				/>
-				{''}
-				<Menu />
-				<Button variant="contained" color="primary">Filtro1</Button>
-				<Button variant="contained" color="primary">Filtro2</Button>
-				<Button variant="contained" color="primary">Filtro3</Button>
-				<Button variant="contained" color="primary">Filtro4</Button>
-				<Button variant="contained" color="primary">Filtro5</Button>
 			</div>
 		);
 	}
