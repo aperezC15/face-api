@@ -21,7 +21,7 @@ class FacePage extends Component {
 			positionIndex: 0,
 			imageFilter: new Image(),
 			imagenMari: new Image(),
-			filterSelected: 'Cocina1'
+			filterSelected: 'Cocina4'
 		};
 		this.setVideoHandler = this.setVideoHandler.bind(this);
 		this.isModelLoaded = this.isModelLoaded.bind(this);
@@ -61,7 +61,7 @@ class FacePage extends Component {
 	identifyPoints(canvas, points, color) {
 		canvas.beginPath();
 		canvas.strokeStyle = color;
-		const totalPoints = points.length / 2 + 1;
+		//const totalPoints = points.length / 2 + 1;
 
 		for (let i = 3; i < 5; i++) {
 			// si el índice es 0 me muevo a la coordenada
@@ -127,11 +127,12 @@ class FacePage extends Component {
 							result.detection.box.bottomLeft
 						).draw(this.props.canvas.current);
 
+						const filtro = filtros.find((f) => f.name === this.state.filterSelected);
 						// const jawOutline = landmarks.getJawOutline();
 						// const nose = landmarks.getNose();
 						// const mouth = landmarks.getMouth();
-						const leftEye = landmarks.getLeftEye();
-						const rightEye = landmarks.getRightEye();
+						// const leftEye = landmarks.getLeftEye();
+						// const rightEye = landmarks.getRightEye();
 						// const leftEyeBbrow = landmarks.getLeftEyeBrow();
 						// const rightEyeBrow = landmarks.getRightEyeBrow();
 
@@ -139,16 +140,13 @@ class FacePage extends Component {
 						const currentCanvas = ReactDOM.findDOMNode(this.props.canvas.current);
 						var canvasElement = currentCanvas.getContext('2d');
 
-						//lentes
-						let ancho = rightEye[3].x - leftEye[0].x + 35,
-							alto = leftEye[5].y - leftEye[2].y + 95;
+						const initialPosition = {
+							x: landmarks[filtro.positionFace]()[0].x + filtro.move.toRight,
+							y: landmarks[filtro.positionFace]()[0].y + filtro.move.toBottom
+						};
 
-						canvasElement.translate(leftEye[0].x - 12, leftEye[0].y - 50);
-						canvasElement.drawImage(this.state.imageFilter, 0, 0, ancho, alto);
-
-						//mariposa
-						// canvasElement.translate(leftEye[0].x - 20, leftEye[0].y + 10);
-						// canvasElement.drawImage(this.state.imagenMari, 0, 0, 25, 25);
+						canvasElement.translate(initialPosition.x, initialPosition.y);
+						canvasElement.drawImage(this.state.imageFilter, 0, 0, filtro.dim.width, filtro.dim.height);
 					});
 				}
 			} catch (exception) {
@@ -188,8 +186,8 @@ class FacePage extends Component {
 				await faceapi.nets.tinyFaceDetector.load(modelFolder);
 			}
 
-			this.state.imagenMari.src = '/Imagenes/Cocina/Cocina4.svg';
-			this.state.imageFilter.src = '/Imagenes/lentesMoña.svg';
+			this.state.imageFilter.src = '/Imagenes/Cocina/Cocina4.svg';
+
 			this.state.imageFilter.onload = function() {
 				console.log('image is loaded');
 			};
@@ -219,9 +217,11 @@ class FacePage extends Component {
 	}
 
 	onSelectFilter(name) {
-		const filtro = filtros.find((f) => f.name == name);
-		this.state.imageFilter.src = filtro.path;
-		this.setState({ filterSelected: name });
+		const filtro = filtros.find((f) => f.name === name);
+		const image = this.state.imageFilter;
+		image.src = filtro.path;
+
+		this.setState({ filterSelected: name, imageFilter: image });
 	}
 
 	render() {
